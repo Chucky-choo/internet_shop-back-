@@ -9,6 +9,8 @@ import { BasketEntity } from './basket/entities/basket.entity';
 import { ProductModule } from './product/product.module';
 import { ProductEntity } from './product/entities/product.entity';
 import { AuthModule } from './auth/auth.module';
+import { RolesModule } from './roles/roles.module';
+import { RoleEntity } from './roles/entities/roles.entity';
 
 @Module({
   imports: [
@@ -19,13 +21,14 @@ import { AuthModule } from './auth/auth.module';
       username: 'postgres',
       password: 'dedafu47',
       database: 'Edelweiss',
-      entities: [UserEntity, BasketEntity, ProductEntity],
+      entities: [UserEntity, BasketEntity, ProductEntity, RoleEntity],
       synchronize: true,
     }),
     UserModule,
     BasketModule,
     ProductModule,
     AuthModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

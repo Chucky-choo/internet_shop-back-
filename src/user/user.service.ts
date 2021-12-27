@@ -5,16 +5,23 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { CreateLoginUserDto } from './dto/login-user.dto';
+import { RoleEntity } from '../roles/entities/roles.entity';
+import { RolesService } from '../roles/roles.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private repository: Repository<UserEntity>,
+    private roleRepository: RolesService,
   ) {}
 
-  create(dto: CreateUserDto) {
-    return this.repository.save(dto);
+  async create(dto: CreateUserDto) {
+    const user = await this.repository.create(dto);
+    console.log(user);
+    const role = await this.roleRepository.getRoleByValue('ADMIN');
+    user.roles = [role];
+    return await this.repository.save(user);
   }
 
   findAll() {

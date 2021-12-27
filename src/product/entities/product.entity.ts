@@ -3,6 +3,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -43,6 +44,6 @@ export class ProductEntity {
   salePrice?: number;
 
   @ManyToMany(() => BasketEntity)
-  @JoinColumn({ name: 'basketId' })
-  basket?: BasketEntity;
+  @JoinTable()
+  basket: BasketEntity[];
 }

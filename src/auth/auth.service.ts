@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { RoleEntity } from 'src/roles/entities/roles.entity';
 import { UsersService } from 'src/user/user.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 
@@ -26,8 +27,16 @@ export class AuthService {
     return null;
   }
 
-  generateJwtToken(data: { phoneNumber: string; id: number }) {
-    const payload = { phoneNumber: data.phoneNumber, sub: data.id };
+  generateJwtToken(data: {
+    phoneNumber: string;
+    id: number;
+    roles: RoleEntity[];
+  }) {
+    const payload = {
+      phoneNumber: data.phoneNumber,
+      sub: data.id,
+      roles: data.roles,
+    };
     return this.jwtService.sign(payload);
   }
 
@@ -48,9 +57,8 @@ export class AuthService {
         token: this.generateJwtToken(userData),
       };
     } catch (e) {
+      console.error(e);
       throw new ForbiddenException('Помилка при регістрації');
     }
   }
 }
-
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjEyMzEyMyIsInN1YiI6MSwiaWF0IjoxNjM4ODgyMDYyLCJleHAiOjE2NDE0NzQwNjJ9.t9lzRbLpxj4r3KxIXuqqZ_EJ2R83PMhuCMV3crBWAvs

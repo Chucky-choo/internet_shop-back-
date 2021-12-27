@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,19 +22,33 @@ export class ProductService {
   }
 
   findAll() {
-    console.log('findAll');
     return this.repository.find();
   }
 
-  findOne(id: number) {
-    return this.repository.findOne(id);
+  async findOne(id: string) {
+    const commodity = await this.repository.findOne(id);
+    if (!commodity) {
+      throw new NotFoundException(null, 'не знайдено такий товар');
+    }
+    return commodity;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    const product = await this.repository.findOne(id);
+    if (product) {
+      await this.repository.update(id, updateProductDto);
+      return this.repository.findOne(id);
+    } else {
+      return 'нема такого товару';
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: number) {
+    const product = await this.repository.findOne(id);
+    if (product) {
+      this.repository.delete(id);
+    } else {
+      return 'нема такого товару';
+    }
   }
 }

@@ -4,8 +4,6 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -21,9 +19,6 @@ export class BasketEntity {
   @JoinColumn({ name: 'userId' })
   user: UserEntity;
 
-  @ManyToMany((type) => ProductEntity, (products) => products.basket, {
-    cascade: true,
-  })
   @Type(() => ProductEntity)
   products: ProductEntity[];
 
