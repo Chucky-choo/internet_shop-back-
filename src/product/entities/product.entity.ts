@@ -2,11 +2,12 @@ import { BasketEntity } from 'src/basket/entities/basket.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { PhotoEntity } from '../../photos/entities/photo.entity';
 
 @Entity('product')
 export class ProductEntity {
@@ -17,7 +18,10 @@ export class ProductEntity {
   name: string;
 
   @Column({ nullable: true })
-  photos: string;
+  cover: string;
+
+  @OneToMany(() => PhotoEntity, (photo) => photo.product)
+  photos: PhotoEntity[];
 
   @Column({ nullable: true })
   count: number;

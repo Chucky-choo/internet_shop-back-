@@ -11,9 +11,17 @@ import { ProductEntity } from './product/entities/product.entity';
 import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
 import { RoleEntity } from './roles/entities/roles.entity';
+import { FileModule } from './file/file.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { PhotosModule } from './photos/photos.module';
+import * as path from 'path';
+import { PhotoEntity } from './photos/entities/photo.entity';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, 'static'),
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -21,7 +29,13 @@ import { RoleEntity } from './roles/entities/roles.entity';
       username: 'postgres',
       password: 'dedafu47',
       database: 'Edelweiss',
-      entities: [UserEntity, BasketEntity, ProductEntity, RoleEntity],
+      entities: [
+        UserEntity,
+        BasketEntity,
+        ProductEntity,
+        RoleEntity,
+        PhotoEntity,
+      ],
       synchronize: true,
     }),
     UserModule,
@@ -29,6 +43,8 @@ import { RoleEntity } from './roles/entities/roles.entity';
     ProductModule,
     AuthModule,
     RolesModule,
+    FileModule,
+    PhotosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

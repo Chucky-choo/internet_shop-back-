@@ -17,8 +17,4 @@ export class RoleEntity {
 
   @Column()
   description: string;
-
-  // @ManyToMany(() => UserEntity)
-  // @JoinTable()
-  // users: UserEntity[];
 }

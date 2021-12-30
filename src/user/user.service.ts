@@ -5,7 +5,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { CreateLoginUserDto } from './dto/login-user.dto';
-import { RoleEntity } from '../roles/entities/roles.entity';
 import { RolesService } from '../roles/roles.service';
 
 @Injectable()
@@ -25,15 +24,15 @@ export class UsersService {
   }
 
   findAll() {
-    return this.repository.find();
+    return this.repository.find({ relations: ['basket'] });
   }
 
   findById(id: number): Promise<UserEntity> {
-    return this.repository.findOne(+id);
+    return this.repository.findOne(+id, { relations: ['roles'] });
   }
 
   findByCond(cond: CreateLoginUserDto) {
-    return this.repository.findOne(cond);
+    return this.repository.findOne(cond, { relations: ['roles'] });
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {

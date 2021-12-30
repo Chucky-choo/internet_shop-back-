@@ -7,12 +7,19 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  UploadedFiles,
+  UploadedFile,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Roles } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 
 @Controller('product')
 export class ProductController {
@@ -21,8 +28,10 @@ export class ProductController {
   @Post()
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'photos', maxCount: 10 }]))
+  create(@UploadedFiles() files, @Body() createProductDto: CreateProductDto) {
+    const { photos } = files;
+    return this.productService.create(createProductDto, photos);
   }
 
   @Get()
@@ -36,11 +45,15 @@ export class ProductController {
   }
 
   @Patch(':id')
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(+id, updateProductDto);
   }
 
   @Delete(':id')
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
   remove(@Param('id') id: string) {
     return this.productService.remove(+id);
   }

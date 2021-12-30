@@ -5,9 +5,6 @@ export class CreateProductDto {
   name: string;
 
   @IsNotEmpty()
-  photos: string;
-
-  @IsNotEmpty()
   count: number;
 
   @IsNotEmpty()
