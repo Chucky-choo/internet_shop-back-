@@ -4,8 +4,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserEntity } from './user/entities/user.entity';
 import { UserModule } from './user/user.module';
-import { BasketModule } from './basket/basket.module';
-import { BasketEntity } from './basket/entities/basket.entity';
 import { ProductModule } from './product/product.module';
 import { ProductEntity } from './product/entities/product.entity';
 import { AuthModule } from './auth/auth.module';
@@ -29,17 +27,10 @@ import { PhotoEntity } from './photos/entities/photo.entity';
       username: 'postgres',
       password: 'dedafu47',
       database: 'Edelweiss',
-      entities: [
-        UserEntity,
-        BasketEntity,
-        ProductEntity,
-        RoleEntity,
-        PhotoEntity,
-      ],
+      entities: [UserEntity, ProductEntity, RoleEntity, PhotoEntity],
       synchronize: true,
     }),
     UserModule,
-    BasketModule,
     ProductModule,
     AuthModule,
     RolesModule,

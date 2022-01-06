@@ -3,14 +3,12 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToOne,
-  JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { BasketEntity } from '../../basket/entities/basket.entity';
+import { ProductEntity } from '../../product/entities/product.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -23,17 +21,11 @@ export class UserEntity {
   @Column({ nullable: true, unique: true })
   email?: string;
 
-  @Column({
-    unique: true,
-  })
+  @Column({ unique: true })
   phoneNumber: string;
 
   @Column()
   password: string;
-
-  @OneToOne(() => BasketEntity, { nullable: true })
-  @JoinColumn({ name: 'basketId' })
-  basket?: BasketEntity;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
@@ -44,4 +36,8 @@ export class UserEntity {
   @ManyToMany(() => RoleEntity)
   @JoinTable()
   roles: RoleEntity[];
+
+  @ManyToMany(() => ProductEntity)
+  @JoinTable({ name: 'baskets' })
+  cart: ProductEntity[];
 }

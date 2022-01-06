@@ -1,9 +1,9 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class CreateBasketDto {
+export class productToBasketDto {
   @IsNotEmpty()
-  userId: number;
+  idUser: number;
 
   @IsNotEmpty()
-  productId?: number;
+  idProduct: number;
 }

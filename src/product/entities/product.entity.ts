@@ -1,12 +1,4 @@
-import { BasketEntity } from 'src/basket/entities/basket.entity';
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { PhotoEntity } from '../../photos/entities/photo.entity';
 
 @Entity('product')
@@ -46,8 +38,4 @@ export class ProductEntity {
 
   @Column({ nullable: true })
   salePrice?: number;
-
-  @ManyToMany(() => BasketEntity)
-  @JoinTable()
-  basket: BasketEntity[];
 }

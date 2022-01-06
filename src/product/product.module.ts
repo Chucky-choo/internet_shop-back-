@@ -6,7 +6,6 @@ import { ProductEntity } from './entities/product.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { FileService } from 'src/file/file.service';
 import { PhotosModule } from '../photos/photos.module';
-import { UsersService } from '../user/user.service';
 
 @Module({
   imports: [
@@ -16,5 +15,6 @@ import { UsersService } from '../user/user.service';
   ],
   controllers: [ProductController],
   providers: [ProductService, FileService],
+  exports: [ProductService],
 })
 export class ProductModule {}

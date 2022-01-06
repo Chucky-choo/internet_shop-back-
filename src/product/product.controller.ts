@@ -9,17 +9,13 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFiles,
-  UploadedFile,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Roles } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-} from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 @Controller('product')
 export class ProductController {
@@ -41,7 +37,12 @@ export class ProductController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.productService.findOne(id);
+    return this.productService.findOne(+id);
+  }
+
+  @Get('/photos/:id')
+  findOnlyPhotos(@Param('id') id: string) {
+    return this.productService.findOnlyPhotos(id);
   }
 
   @Patch(':id')
