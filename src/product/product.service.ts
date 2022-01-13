@@ -57,8 +57,8 @@ export class ProductService {
     return commodity;
   }
 
-  async findProductMain(id: number): Promise<ProductEntity> {
-    const commodity = await this.repository.findOne(id, {
+  findProductMain(id: number): Promise<ProductEntity> {
+    const commodity = this.repository.findOne(id, {
       select: ['id', 'name', 'size', 'price', 'cover', 'salePrice'],
     });
     if (!commodity) {
@@ -85,7 +85,7 @@ export class ProductService {
       await this.repository.update(id, updateProductDto);
       return this.repository.findOne(id);
     } else {
-      return 'нема такого товару';
+      throw new NotFoundException(null, 'не знайдено такий товар');
     }
   }
 
@@ -107,7 +107,7 @@ export class ProductService {
       this.repository.delete(id);
       return 'Товар був успішно видалений';
     } else {
-      return 'нема такого товару';
+      throw new NotFoundException(null, 'не знайдено такий товар');
     }
   }
 }

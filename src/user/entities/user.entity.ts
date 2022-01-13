@@ -1,3 +1,4 @@
+import { OrderEntity } from 'src/order/entities/order.entity';
 import { RoleEntity } from 'src/roles/entities/roles.entity';
 import {
   Entity,
@@ -7,6 +8,7 @@ import {
   UpdateDateColumn,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 import { ProductEntity } from '../../product/entities/product.entity';
 
@@ -40,4 +42,7 @@ export class UserEntity {
   @ManyToMany(() => ProductEntity)
   @JoinTable({ name: 'baskets' })
   cart: ProductEntity[];
+
+  @OneToMany(() => OrderEntity, (order) => order.user)
+  orders: OrderEntity[];
 }

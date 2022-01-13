@@ -30,6 +30,10 @@ export class UsersService {
     return this.repository.find({ relations: ['basket'] });
   }
 
+  findOne(id: number): Promise<UserEntity> {
+    return this.repository.findOne(+id);
+  }
+
   findById(id: number): Promise<UserEntity> {
     return this.repository.findOne(+id, { relations: ['roles', 'cart'] });
   }

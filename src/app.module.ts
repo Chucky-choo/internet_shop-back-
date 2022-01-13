@@ -14,6 +14,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { PhotosModule } from './photos/photos.module';
 import * as path from 'path';
 import { PhotoEntity } from './photos/entities/photo.entity';
+import { OrderModule } from './order/order.module';
+import { OrderEntity } from './order/entities/order.entity';
 
 @Module({
   imports: [
@@ -27,7 +29,13 @@ import { PhotoEntity } from './photos/entities/photo.entity';
       username: 'postgres',
       password: 'dedafu47',
       database: 'Edelweiss',
-      entities: [UserEntity, ProductEntity, RoleEntity, PhotoEntity],
+      entities: [
+        UserEntity,
+        ProductEntity,
+        RoleEntity,
+        PhotoEntity,
+        OrderEntity,
+      ],
       synchronize: true,
     }),
     UserModule,
@@ -36,6 +44,7 @@ import { PhotoEntity } from './photos/entities/photo.entity';
     RolesModule,
     FileModule,
     PhotosModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
