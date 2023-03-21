@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -8,7 +8,6 @@ import { CreateLoginUserDto } from './dto/login-user.dto';
 import { RolesService } from '../roles/roles.service';
 import { ProductService } from '../product/product.service';
 import { productToBasketDto } from './dto/productToBasket.dto';
-import { ProductEntity } from 'src/product/entities/product.entity';
 
 @Injectable()
 export class UsersService {
@@ -31,26 +30,43 @@ export class UsersService {
   }
 
   findOne(id: number): Promise<UserEntity> {
-    return this.repository.findOne(+id);
+    return this.repository.findOne({
+      where: {
+        id: +id,
+      },
+    });
   }
 
-  findById(id: number): Promise<UserEntity> {
-    return this.repository.findOne(+id, { relations: ['roles', 'cart'] });
+  async findOneWitchCart(idUser: number): Promise<UserEntity> {
+    return await this.repository.findOne({
+      where: {
+        id: idUser,
+      },
+      relations: ['cart'],
+    });
   }
 
-  findByCond(cond: CreateLoginUserDto) {
-    return this.repository.findOne(cond, { relations: ['roles', 'cart'] });
+  async findById(id: number): Promise<UserEntity> {
+    return await this.repository.findOne({
+      where: { id: +id },
+      relations: ['roles', 'cart'],
+    });
+  }
+
+  async findByCond(cond: CreateLoginUserDto) {
+    return await this.repository.findOne({
+      where: cond,
+      relations: ['roles', 'cart'],
+    });
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     await this.repository.update(id, updateUserDto);
-    return this.repository.findOne(id);
+    return await this.repository.findOne({ where: { id: 1 } });
   }
 
   async addProductToBasket({ idUser, idProduct }: productToBasketDto) {
-    const user = await this.repository.findOne(idUser, {
-      relations: ['cart'],
-    });
+    const user = await this.findOneWitchCart(idUser);
     const product = await this.productService.findProductMain(idProduct);
     user.cart.push(product);
     await this.repository.save(user);
@@ -58,13 +74,27 @@ export class UsersService {
   }
 
   async pickUpFromTheBasket({ idUser, idProduct }: productToBasketDto) {
-    const user = await this.repository.findOne(idUser, {
-      relations: ['cart'],
-    });
+    const user = await this.findOneWitchCart(idUser);
     user.cart = user.cart.filter((el) => el.id !== idProduct);
     await this.repository.save(user);
-    return await this.repository.findOne(idUser, {
-      relations: ['cart'],
+    return await this.findOneWitchCart(idUser);
+  }
+
+  async cleanTheBasket(idUser: number) {
+    const user = await this.findOneWitchCart(idUser);
+    user.cart = [];
+    await this.repository.save(user);
+    return await this.findOneWitchCart(idUser);
+  }
+
+  async findOrders(id: number) {
+    const user = await this.repository.findOne({
+      where: {
+        id,
+      },
+      relations: ['orders'],
     });
+    const { orders } = user;
+    return orders;
   }
 }

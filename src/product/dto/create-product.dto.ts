@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsOptional } from 'class-validator';
+import { Gender } from '../entities/product.entity';
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -27,4 +28,7 @@ export class CreateProductDto {
 
   @IsOptional()
   salePrice: number;
+
+  @IsOptional()
+  gender: Gender;
 }

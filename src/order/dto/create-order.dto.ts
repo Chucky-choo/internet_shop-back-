@@ -4,6 +4,15 @@ export class CreateOrderDto {
   @IsNotEmpty()
   userId: number;
 
-  @IsOptional()
+  @IsNotEmpty()
   productId: number[];
+
+  @IsOptional()
+  comment: string;
+
+  @IsOptional()
+  cityName: string;
+
+  @IsOptional()
+  department: string;
 }

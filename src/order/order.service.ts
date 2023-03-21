@@ -25,23 +25,30 @@ export class OrderService {
     return this.repository.save(order);
   }
 
-  async create(createOrderDto: CreateOrderDto) {
-    const user = await this.userService.findOne(createOrderDto.userId);
-
-    const idOrder = await this.repository.save({
-      user,
-      status: Status.Processed,
-    });
-
-    const order = await this.repository.findOne(idOrder.id, {
+  findOrderProducts(idOrder: number) {
+    return this.repository.findOne({
+      where: { id: idOrder },
       relations: ['productsInOrder'],
     });
+  }
 
-    return this.setProducts(order, createOrderDto.productId);
+  async create(createOrderDto: CreateOrderDto) {
+    const { userId, productId, ...elseDto } = createOrderDto;
+    const user = await this.userService.findOne(userId);
+
+    const preCreateOrder = await this.repository.save({
+      user,
+      status: Status.Processed,
+      ...elseDto,
+    });
+
+    const order = await this.findOrderProducts(preCreateOrder.id);
+
+    return this.setProducts(order, productId);
   }
 
   async findOneById(id: number) {
-    const order = await this.repository.findOne(id);
+    const order = await this.repository.findOne({ where: { id } });
     if (order) {
       return order;
     } else {
@@ -60,9 +67,17 @@ export class OrderService {
     });
   }
 
+  // findUserOrders(idUser: number) {
+  //   return this.repository.find({
+  //     relations: ['user', 'productsInOrder'],
+  //     where: [{ user.id: idUser }],
+  //   });
+  // }
+
   async update(updateOrderDto: UpdateOrderDto) {
     const order = await this.findOneById(updateOrderDto.id);
     order.status = updateOrderDto.status;
+    order.comment = updateOrderDto.comment;
     order.productsInOrder = [];
 
     return this.setProducts(order, updateOrderDto.productId);

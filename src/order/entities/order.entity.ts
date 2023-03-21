@@ -24,4 +24,13 @@ export class OrderEntity {
 
   @Column()
   status: Status;
+
+  @Column({ nullable: true })
+  comment: string;
+
+  @Column()
+  cityName: string;
+
+  @Column()
+  department: string;
 }

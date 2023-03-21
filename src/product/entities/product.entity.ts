@@ -1,5 +1,17 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { PhotoEntity } from '../../photos/entities/photo.entity';
+
+export enum Gender {
+  Man = 'man',
+  Woman = 'woman',
+}
 
 @Entity('product')
 export class ProductEntity {
@@ -38,4 +50,13 @@ export class ProductEntity {
 
   @Column({ nullable: true })
   salePrice?: number;
+
+  @Column({ nullable: true })
+  gender: Gender;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updateAt: Date;
 }

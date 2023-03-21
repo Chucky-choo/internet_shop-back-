@@ -30,9 +30,14 @@ export class ProductController {
     return this.productService.create(createProductDto, photos);
   }
 
-  @Get()
-  findAll() {
-    return this.productService.findAll();
+  @Post('/getFiltered')
+  findAllFiltered(@Body() data) {
+    return this.productService.findAllFiltered(data);
+  }
+
+  @Get('/discounts/:gender')
+  findDiscounts(@Param('gender') gender: string) {
+    return this.productService.findDiscounts(gender);
   }
 
   @Get(':id')

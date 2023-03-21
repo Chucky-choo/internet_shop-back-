@@ -9,15 +9,12 @@ export class UpdateUserDto {
   @IsOptional()
   @IsEmail()
   @UniqueOnDatabase(UserEntity)
-  email?: string;
+  email: string;
 
+  @IsOptional()
   @Length(4)
   password: string;
 
   @IsNotEmpty()
-  @UniqueOnDatabase(UserEntity)
   phoneNumber: string;
-
-  @IsOptional()
-  basketId?: number;
 }

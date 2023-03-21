@@ -1,16 +1,14 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, LessThan, MoreThan, Not, Repository } from 'typeorm';
 import { ProductEntity } from './entities/product.entity';
 import { FileService, FileType } from 'src/file/file.service';
 import { PhotosService } from '../photos/photos.service';
+// import dataSource from 'db/data-source';
+
+// const productRepository = dataSource.getRepository(ProductEntity);
 
 @Injectable()
 export class ProductService {
@@ -43,12 +41,24 @@ export class ProductService {
     });
   }
 
-  async findAll(): Promise<ProductEntity[]> {
-    return this.repository.find();
+  async findAllFiltered(data): Promise<ProductEntity[]> {
+    return await this.repository.find(data);
+  }
+
+  async findDiscounts(gender): Promise<ProductEntity[]> {
+    if (gender) {
+      return await this.repository.findBy({
+        salePrice: MoreThan(0),
+        gender: Equal(gender),
+      });
+    } else {
+      return await this.repository.findBy({ salePrice: MoreThan(0) });
+    }
   }
 
   async findOne(id: number): Promise<ProductEntity> {
-    const commodity = await this.repository.findOne(id, {
+    const commodity = await this.repository.findOne({
+      where: { id },
       relations: ['photos'],
     });
     if (!commodity) {
@@ -58,7 +68,8 @@ export class ProductService {
   }
 
   findProductMain(id: number): Promise<ProductEntity> {
-    const commodity = this.repository.findOne(id, {
+    const commodity = this.repository.findOne({
+      where: { id },
       select: ['id', 'name', 'size', 'price', 'cover', 'salePrice'],
     });
     if (!commodity) {
@@ -69,7 +80,8 @@ export class ProductService {
 
   async findOnlyPhotos(id: string) {
     try {
-      const commodity = await this.repository.findOne(id, {
+      const commodity = await this.repository.findOne({
+        where: { id: +id },
         relations: ['photos'],
       });
       const { photos } = commodity;
@@ -80,17 +92,21 @@ export class ProductService {
   }
 
   async update(id: number, updateProductDto: UpdateProductDto) {
-    const product = await this.repository.findOne(id);
+    const product = await this.repository.findOne({ where: { id } });
     if (product) {
-      await this.repository.update(id, updateProductDto);
-      return this.repository.findOne(id);
+      await this.repository.update(id, {
+        ...updateProductDto,
+        updateAt: new Date(),
+      });
+      return this.repository.findOne({ where: { id } });
     } else {
       throw new NotFoundException(null, 'не знайдено такий товар');
     }
   }
 
   async remove(id: number) {
-    const product = await this.repository.findOne(id, {
+    const product = await this.repository.findOne({
+      where: { id },
       relations: ['photos'],
     });
 
