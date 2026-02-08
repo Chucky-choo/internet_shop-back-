@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import {IsNotEmpty, IsOptional} from 'class-validator';
+import {Column} from "typeorm";
 
 export class CreateOrderDto {
   @IsNotEmpty()
@@ -15,4 +16,7 @@ export class CreateOrderDto {
 
   @IsOptional()
   department: string;
+
+  @Column()
+  size: string;
 }

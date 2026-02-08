@@ -25,8 +25,8 @@ import { OrderEntity } from './order/entities/order.entity';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
-      port: 5000,
-      username: 'postgres',
+      port: 5432,
+      username: 'xe',
       password: 'dedafu47',
       database: 'Edelweiss',
       entities: [

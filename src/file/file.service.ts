@@ -26,10 +26,30 @@ export class FileService {
     }
   }
 
-  async deleteFile(filePath: string) {
-    fs.unlink('dist/static/' + filePath, (err) => {
-      if (err) throw err;
-      console.log(filePath + 'was deleted');
-    });
+  async deleteFile(fileUrl: string) {
+    try {
+      // Видаляємо baseUrl, якщо він присутній
+      const filePath = fileUrl.replace(baseUrl, '');
+
+      // Отримуємо абсолютний шлях до файлу
+      const absolutePath = path.resolve(__dirname, '..', 'static', filePath);
+
+      // Перевіряємо, чи існує файл
+      if (!fs.existsSync(absolutePath)) {
+        throw new HttpException(
+          `File not found: ${filePath}`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      // Видаляємо файл
+      fs.unlinkSync(absolutePath);
+      console.log(filePath + ' was deleted');
+    } catch (e) {
+      throw new HttpException(
+        `Failed to delete file: ${e.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

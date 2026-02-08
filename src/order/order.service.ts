@@ -33,13 +33,13 @@ export class OrderService {
   }
 
   async create(createOrderDto: CreateOrderDto) {
-    const { userId, productId, ...elseDto } = createOrderDto;
+    const { userId, productId, ...restDto } = createOrderDto;
     const user = await this.userService.findOne(userId);
 
     const preCreateOrder = await this.repository.save({
       user,
       status: Status.Processed,
-      ...elseDto,
+      ...restDto,
     });
 
     const order = await this.findOrderProducts(preCreateOrder.id);
@@ -84,7 +84,6 @@ export class OrderService {
   }
 
   async remove(id: number) {
-    await this.findOneById(id);
     await this.repository.delete(id);
     return 'Замовлення було успішно видалено';
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -19,7 +19,16 @@ export class UsersService {
   ) {}
 
   async create(dto: CreateUserDto) {
-    const user = await this.repository.create(dto);
+    const existing = await this.repository.findOne({
+      where: [{ phoneNumber: dto.phoneNumber }, { email: dto.email }],
+    });
+
+    if (existing) {
+      const field = existing.phoneNumber === dto.phoneNumber ? 'номер' : 'пошта';
+      throw new ConflictException(`Така ${field} вже існує`);
+    }
+
+    const user = this.repository.create(dto);
     const role = await this.roleRepository.getRoleByValue('USER');
     user.roles = [role];
     return await this.repository.save(user);
@@ -38,12 +47,14 @@ export class UsersService {
   }
 
   async findOneWitchCart(idUser: number): Promise<UserEntity> {
-    return await this.repository.findOne({
+    const a=  await this.repository.findOne({
       where: {
         id: idUser,
       },
       relations: ['cart'],
     });
+    console.log(a)
+    return a
   }
 
   async findById(id: number): Promise<UserEntity> {
@@ -75,7 +86,7 @@ export class UsersService {
 
   async pickUpFromTheBasket({ idUser, idProduct }: productToBasketDto) {
     const user = await this.findOneWitchCart(idUser);
-    user.cart = user.cart.filter((el) => el.id !== idProduct);
+    user.cart = user.cart.filter(el => el.id !== idProduct);
     await this.repository.save(user);
     return await this.findOneWitchCart(idUser);
   }

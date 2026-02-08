@@ -1,6 +1,4 @@
 import { IsEmail, IsNotEmpty, IsOptional, Length } from 'class-validator';
-import { UniqueOnDatabase } from '../UniqueValidation/UniqueValidation';
-import { UserEntity } from '../entities/user.entity';
 
 export class UpdateUserDto {
   @IsNotEmpty()
@@ -8,7 +6,6 @@ export class UpdateUserDto {
 
   @IsOptional()
   @IsEmail()
-  @UniqueOnDatabase(UserEntity)
   email: string;
 
   @IsOptional()

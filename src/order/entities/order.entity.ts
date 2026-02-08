@@ -33,4 +33,7 @@ export class OrderEntity {
 
   @Column()
   department: string;
+
+  @Column()
+  size: string;
 }
